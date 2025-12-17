@@ -5,6 +5,8 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
 import Icon from '@/components/ui/icon';
 
 type Course = {
@@ -44,6 +46,10 @@ const Index = () => {
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [quizScore, setQuizScore] = useState(0);
   const [quizCompleted, setQuizCompleted] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('register');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState('');
 
   const courses: Course[] = [
     {
@@ -247,10 +253,21 @@ const Index = () => {
                 Мои курсы
               </Button>
             </nav>
-            <Button variant="outline">
-              <Icon name="User" size={18} className="mr-2" />
-              Профиль
-            </Button>
+            {isLoggedIn ? (
+              <Button variant="outline">
+                <Icon name="User" size={18} className="mr-2" />
+                {userName}
+              </Button>
+            ) : (
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={() => { setAuthMode('login'); setShowAuthDialog(true); }}>
+                  Войти
+                </Button>
+                <Button onClick={() => { setAuthMode('register'); setShowAuthDialog(true); }}>
+                  Регистрация
+                </Button>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -692,6 +709,112 @@ const Index = () => {
           <p>&copy; 2024 CodeLearn. Образовательная платформа для программистов</p>
         </div>
       </footer>
+
+      <Dialog open={showAuthDialog} onOpenChange={setShowAuthDialog}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center">
+              {authMode === 'register' ? 'Регистрация' : 'Вход'}
+            </DialogTitle>
+            <DialogDescription className="text-center">
+              {authMode === 'register'
+                ? 'Создайте аккаунт и начните обучение'
+                : 'Войдите в свой аккаунт'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.currentTarget);
+              const name = formData.get('name') as string;
+              setUserName(name || 'Пользователь');
+              setIsLoggedIn(true);
+              setShowAuthDialog(false);
+            }}
+            className="space-y-4 mt-4"
+          >
+            {authMode === 'register' && (
+              <div className="space-y-2">
+                <Label htmlFor="name">Имя</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  placeholder="Введите ваше имя"
+                  required
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="example@mail.com"
+                required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="password">Пароль</Label>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Минимум 6 символов"
+                minLength={6}
+                required
+              />
+            </div>
+
+            {authMode === 'register' && (
+              <div className="space-y-2">
+                <Label htmlFor="confirm-password">Подтвердите пароль</Label>
+                <Input
+                  id="confirm-password"
+                  name="confirm-password"
+                  type="password"
+                  placeholder="Повторите пароль"
+                  minLength={6}
+                  required
+                />
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" size="lg">
+              {authMode === 'register' ? 'Зарегистрироваться' : 'Войти'}
+            </Button>
+
+            <div className="text-center text-sm">
+              {authMode === 'register' ? (
+                <p className="text-muted-foreground">
+                  Уже есть аккаунт?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode('login')}
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    Войти
+                  </button>
+                </p>
+              ) : (
+                <p className="text-muted-foreground">
+                  Нет аккаунта?{' '}
+                  <button
+                    type="button"
+                    onClick={() => setAuthMode('register')}
+                    className="text-primary font-semibold hover:underline"
+                  >
+                    Зарегистрироваться
+                  </button>
+                </p>
+              )}
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
