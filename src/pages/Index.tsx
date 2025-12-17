@@ -276,7 +276,7 @@ const Index = () => {
         {activeTab === 'home' && (
           <div className="animate-fade-in">
             <section className="text-center py-20 mb-16">
-              <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+              <h2 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-[#f66c0700]">
                 Изучай программирование эффективно
               </h2>
               <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
