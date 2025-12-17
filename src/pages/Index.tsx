@@ -228,7 +228,7 @@ const Index = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Icon name="Code2" className="text-primary" size={32} />
-              <h1 className="text-2xl font-bold text-primary">CodeLearn</h1>
+              <h1 className="text-2xl font-bold text-primary">Kabanchik courses</h1>
             </div>
             <nav className="hidden md:flex gap-6">
               <Button
